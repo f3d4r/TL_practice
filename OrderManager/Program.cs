@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using OrderManager;
 
 public class Programm
 {
@@ -7,7 +8,7 @@ public class Programm
         Console.WriteLine( "Приветствуем в менеджере заказов" );
         Console.WriteLine( "--------------------------------------------" );
 
-        var order = new Order
+        Order order = new Order
         {
             ProductName = ReadProductName(),
             Quantity = ReadQuantity(),
@@ -54,12 +55,20 @@ public class Programm
     {
         Console.Write( "Введите количество товара: " );
         int quantity;
-        while ( !int.TryParse( Console.ReadLine(), out quantity ) || ( quantity == 0 ) || ( quantity < 0 ) )
+        string? input = Console.ReadLine();
+
+        while ( !ValidQuantity( input, out quantity ) )
         {
             Console.Write( "Введите корректное количество товара: " );
+            input = Console.ReadLine();
         }
 
         return quantity;
+    }
+
+    static bool ValidQuantity( string? input, out int quantity )
+    {
+        return int.TryParse( input, out quantity ) && quantity > 0;
     }
 
     static string ReadAddress()
@@ -74,36 +83,5 @@ public class Programm
         }
 
         return address;
-    }
-}
-
-public class Order
-{
-    public string ProductName { get; set; }
-    public int Quantity { get; set; }
-    public string UserName { get; set; }
-    public string Address { get; set; }
-    public DateTime TodayDate { get; set; }
-}
-
-public static class OrderProcessor
-{
-    public static void ConfirmOrder( Order order )
-    {
-        Console.WriteLine( $"Здравствуйте, {order.UserName}, вы заказали {order.Quantity} " +
-            $"{order.ProductName} на адрес {order.Address}, все верно?" );
-        Console.WriteLine( "Да - Y/y, нет - любой другой символ" );
-        string confirmation = Console.ReadLine();
-
-        switch ( confirmation )
-        {
-            case var s when s == "Y" || s == "y":
-                Console.WriteLine( $"{order.UserName}! Ваш заказ {order.ProductName} в количестве " +
-                    $"{order.Quantity} оформлен! Ожидайте доставку по адресу {order.Address} к {order.TodayDate.AddDays( 3 )}" );
-                break;
-            default:
-                Console.WriteLine( "Заказ не оформлен" );
-                break;
-        }
     }
 }
