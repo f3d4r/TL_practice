@@ -17,7 +17,6 @@ public class Programm
             TodayDate = DateTime.Now
         };
 
-
         OrderProcessor.ConfirmOrder( order );
 
         Console.WriteLine( "--------------------------------------------" );
